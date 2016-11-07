@@ -30,7 +30,7 @@ void setup()
 
 float lux2ev(float lux)
 {
-	return log(lux) - log(2.5);
+	return (log(lux) - log(2.5)) / log(2);
 }
 
 void loop()
@@ -40,7 +40,6 @@ void loop()
 
 	Serial.print("TSL2561 IR: "); Serial.print(ir);  Serial.print("  ");
 	Serial.print("Full: "); Serial.print(full); Serial.print("  ");
-	Serial.print("Visible: "); Serial.print(full - ir); Serial.print("  ");
 	float lux = tsl2561.calculateLux(full, ir);
 	Serial.print("Lux: "); Serial.print(lux); Serial.print("  ");
 	Serial.print("EV: "); Serial.println(lux2ev(lux));
@@ -50,18 +49,14 @@ void loop()
 	full = lum & 0xFFFF;
 	Serial.print("TSL2591 IR: "); Serial.print(ir);  Serial.print("  ");
 	Serial.print("Full: "); Serial.print(full); Serial.print("  ");
-	Serial.print("Visible: "); Serial.print(full - ir); Serial.print("  ");
 	lux = tsl2591.calculateLux(full, ir);
 	Serial.print("Lux: "); Serial.print(lux, 6); Serial.print("  ");
 	Serial.print("EV: "); Serial.println(lux2ev(lux));
 
-	const uint16_t VISIBLE_DARK = 250;
-	const uint16_t IR_DARK = 270;
-	full = si1145.readVisible() - VISIBLE_DARK;
-	ir = si1145.readIR() - IR_DARK;
+	full = si1145.readVisible();
+	ir = si1145.readIR();
 	Serial.print("SI1145 IR: "); Serial.print(ir);  Serial.print("  ");
 	Serial.print("Full: "); Serial.print(full); Serial.print("  ");
-	Serial.print("Visible: "); Serial.print(full - ir); Serial.print("  ");
 	lux = si1145.calculateLux(full, ir);
 	Serial.print("Lux: "); Serial.print(lux, 6); Serial.print("  ");
 	Serial.print("EV: "); Serial.println(lux2ev(lux));
